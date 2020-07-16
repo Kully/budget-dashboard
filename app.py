@@ -28,7 +28,7 @@ RED_BORDER_STYLE = {'border': '1px solid red', 'border-radius': '4px'}
 GREEN_BORDER_STYLE = {'border': '1px solid green', 'border-radius': '4px'}
 
 df = pd.read_csv(
-    'AAPL-Ticks-Sample/AAPL_2010-01-04.txt',
+    './AAPL-Ticks-Sample/AAPL_2010-01-04.txt',
     header=None,
     names=['DateTime', 'Price', 'Volume', 'Exchange']
 )
