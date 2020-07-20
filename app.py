@@ -15,30 +15,28 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 
 
-BODY_STYLE = {
-    "margin": "1em",
-}
-
-HEADER_STYLE  = {
-    
-}
-
-FLOAT_RIGHT = {
-    "float": "right",
-}
-
-# figure stuff
-
 gridColor = '#dadada'
 blueColor ='#2196F3'
 darkBlueColor = '#3b6978'
 
+BODY_STYLE = {"margin": "1em"}
+FLOAT_RIGHT = {"float": "right"}
+SUBTITLE_STYLE = {
+    "color": "#aab",
+    "font-style": "italic",
+}
+ACTIVE_LABEL = {
+    "background-color": "#cbeaed",
+    "border": "1px solid " + blueColor,
+    "border-radius": "4px"
+}
+
+y_values = [4, 17, 12, 3, 6, 10, 11]
 figure = {
     "data": [
         {
             "x":  ["Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"],
-            "y":  [4, 17, 12, 3, 6, 10, 11],
-            # 'mode': 'lines',
+            "y":  y_values,
             "marker": {
                 "color": blueColor,
                 "size": 14
@@ -48,9 +46,29 @@ figure = {
     "layout": {
         "yaxis": {"range": [0, 20], "zeroline": False},
         "plot_bgcolor": "#fdfdfe",
-        # "margin": {"l": 7, "r": 7}
+        "margin": {"l": 25, "b": 25, "r": 25, "t": 25}
     },
 }
+
+pie_figure = go.Figure(
+    data=[
+        go.Pie(
+            values=y_values,
+            hole=.86,
+            marker=dict(
+                colors=px.colors.sequential.Blues,
+                line=dict(color='#fafafa', width=4)
+            ),
+            textinfo=None,
+            text=None
+        )
+    ],
+    layout=dict(
+        showlegend=False,
+        margin=dict(l=2, r=2, t=2, b=2)
+    )
+)
+
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.MATERIA])
 server = app.server
@@ -60,40 +78,70 @@ app.layout = html.Div([
         dbc.CardHeader([
             dbc.Row([
                 dbc.Col([
-                    html.H3("Budget"),
+                    html.H3("Dashboard Analysis"),
+                    html.Span("a metric-analysis tool", style=SUBTITLE_STYLE)
                 ]),
                 dbc.Col([
-                    dbc.Input(id="nav-input", type="text", placeholder="search algorithm...", bs_size="md", className="mr-3"),
-                ], width=7),
+                    dbc.Select(
+                        id="select",
+                        value="Least Squares",
+                        options=[
+                            {"label": "Linear Regression", "value": "1"},
+                            {"label": "Least Squares", "value": "2"},
+                            {"label": "Stochastic Gradient Descent", "value": "3"},
+                            {"label": "Principal Component Analysis", "value": "4", "disabled": True},
+                            {"label": "Tensor Flow", "value": "3", "disabled": True},
+                        ],
+                    )
+
+                ], width=6),
                 dbc.Col([
-                    dbc.Button("LOG OUT", color="light", className="mr-1", style=FLOAT_RIGHT),
-                    dbc.Button("VERIFY", color="success", className="mr-1", style=FLOAT_RIGHT),
-                    dbc.Button("RUN", color="primary", className="mr-1", style=FLOAT_RIGHT),
+                    dbc.ButtonGroup(
+                        [dbc.Button("Run", color="success"),
+                         dbc.Button("Stop", color="danger"),
+                         dbc.Button("Verify", color="warning"),
+                         dbc.Button("Sign Out", color="light")],
+                        size="lg",
+                        className="mr-1",
+                        style=FLOAT_RIGHT
+                    ),
                 ], width=4),
             ]),
         ]),
         dbc.CardBody(dbc.Row([
-            # side bar
-            dbc.Col(
+            
+            # 1st part
+            dbc.Col([
                 dbc.ListGroup([
                     dbc.ListGroupItem("Home"),
-                    dbc.ListGroupItem("Design"),
-                    dbc.ListGroupItem("Analysis"),
-                    dbc.ListGroupItem("Tensor"),
-                    dbc.ListGroupItem("Eval"),
-                ])
-                # dbc.Card([
-                #     dbc.ListGroup
-                # ])
-            ),
-            # main app view
+                    dbc.ListGroupItem("Plots", style=ACTIVE_LABEL),
+                    dbc.ListGroupItem("Budget"),
+                    dbc.ListGroupItem("Pricing"),
+                    dbc.ListGroupItem("Invoice"),
+                    dbc.ListGroupItem("Widgets"),
+                ]),
+                dbc.Button(
+                    "Create Report",
+                    id="create-report-button",
+                    color="primary", style={"width": "100%", "top": "1.25rem"})
+            ]),
+            # 2nd part
             dbc.Col(
                 dbc.Card([
                     dcc.Graph(id="plot",
                               figure=figure,
                               config={"displayModeBar": False})
-                ], color="primary", outline=True), width=10
+                ], color="primary"), width=5
             ),
+            # 3rd part
+            dbc.Col(
+                dbc.Card([
+                    dcc.Graph(id="pie-plot",
+                              figure=pie_figure,
+                              config={"displayModeBar": False})
+                ], color="primary"), width=5
+            ),
+
         ]), className="mb-4"),
     ])
 ], style=BODY_STYLE)

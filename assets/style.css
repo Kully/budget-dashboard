@@ -1,0 +1,9 @@
+.list-group-item {
+    cursor: pointer;
+}
+
+.list-group-item:hover {
+    color: #003;
+    background-color: lightblue;
+    transition: 0.08s;
+}
