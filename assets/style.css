@@ -1,3 +1,16 @@
+body {
+    background-color: #ebecf1;
+    margin: 0;
+}
+
+#header {
+    background-color: #0779e4;
+}
+
+#main-card {
+    margin: 1rem;
+}
+
 .list-group-item {
     cursor: pointer;
 }
@@ -6,4 +19,8 @@
     color: #003;
     background-color: lightblue;
     transition: 0.08s;
+}
+
+.nav-link {
+    cursor: pointer;
 }
